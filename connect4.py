@@ -19,6 +19,11 @@ def connect_4():
 def decision(board, num):
     print('Enter column to add piece')
     position = int(input())
+    print(board[0][len(board) - 1])
+    while(board[position][len(board) - 1] != 0):
+        if board[position][len(board) - 1] != 0:
+            print('Column full, enter different column to add piece')
+            position = int(input())
     board = add_piece(position, board, num)
     for i in board:
         print(i)
@@ -33,6 +38,7 @@ def add_piece(position, board, num):
     return board
 
 def win(board):
+    global who_won
     #horizontal win
     if True == horizontal_vertical(board):
         return True
@@ -44,6 +50,31 @@ def win(board):
         return True
 
     #diagonal win
+    board = board.T
+    count = -2
+    while count <= 3:
+        x = np.diagonal(board, offset=count)
+        player_pos_left_down = any([1, 1, 1, 1] == list(x) for x in zip(*[x[i:] for i in range(len([1, 1, 1, 1]))]))
+        if player_pos_left_down == True:
+            who_won = 'Player one'
+            return True
+        y = np.diagonal(np.fliplr(board), offset=count)
+        player_pos_left_down = any([1, 1, 1, 1] == list(y) for y in zip(*[y[i:] for i in range(len([1, 1, 1, 1]))]))
+        if player_pos_left_down == True:
+            who_won = 'Player one'
+            return True
+        x = np.diagonal(board, offset=count)
+        player_neg_left_down = any([-1, -1, -1, -1] == list(x) for x in zip(*[x[i:] for i in range(len([-1, -1, -1, -1]))]))
+        if player_neg_left_down == True:
+            who_won = 'Player two'
+            return True
+        y = np.diagonal(np.fliplr(board), offset=count)
+        player_neg_left_down = any([-1, -1, -1, -1] == list(y) for y in zip(*[y[i:] for i in range(len([-1, -1, -1, -1]))]))
+        if player_neg_left_down == True:
+            who_won = 'Player two'
+            return True
+        count += 1
+    
     return False
 
 def horizontal_vertical(board):
