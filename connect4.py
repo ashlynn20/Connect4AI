@@ -1,6 +1,7 @@
 import numpy as np
 
 who_won = 'no one'
+count = [0, 0, 0, 0, 0, 0, 0]
 
 def connect_4():
     board = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]
@@ -13,17 +14,27 @@ def connect_4():
         if(win(board) == True):
             break
         decision(board, -1)
-    
     print(who_won, 'won!')
 
+#doesn't handle non integer input
 def decision(board, num):
+    global count
     print('Enter column to add piece')
     position = int(input())
-    print(board[0][len(board) - 1])
-    while(board[position][len(board) - 1] != 0):
-        if board[position][len(board) - 1] != 0:
-            print('Column full, enter different column to add piece')
+    if(position > 6 or position < 0):
+        print('Please enter a column from 0 - 6')
+        position = int(input())
+    temp = position
+    count[temp] += 1
+    if(count[temp] > 6):
+        while(count[position] > 6):
+            print('Column full choose new column')
             position = int(input())
+            if(position > 6 or position < 0):
+                print('Please enter a column from 0 - 6')
+                position = int(input())
+        count[temp] -= 1
+        count[position] += 1
     board = add_piece(position, board, num)
     for i in board:
         print(i)
