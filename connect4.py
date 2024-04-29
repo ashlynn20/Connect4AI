@@ -4,16 +4,20 @@ who_won = 'no one'
 count = [0, 0, 0, 0, 0, 0, 0]
 
 def connect_4():
-    board = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]
+    board = [['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o']]
 
     for i in board:
         print(i)
 
     while(win(board) != True):
-        decision(board, 1)
+        decision(board, 'x')
         if(win(board) == True):
             break
-        decision(board, -1)
+        decision(board, 'b')
+    
+    #added to convert board to gamestate to test it works
+    convert_to_gamestate(board)
+
     print(who_won, 'won!')
 
 #doesn't handle non integer input
@@ -42,7 +46,7 @@ def decision(board, num):
 def add_piece(position, board, num):
     count = len(board) - 1
     while count > -1:
-        if board[count][position] == 0:
+        if board[count][position] == 'o':
             board[count][position] = num
             break
         count -= 1
@@ -65,22 +69,22 @@ def win(board):
     count = -2
     while count <= 3:
         x = np.diagonal(board, offset=count)
-        player_pos_left_down = any([1, 1, 1, 1] == list(x) for x in zip(*[x[i:] for i in range(len([1, 1, 1, 1]))]))
+        player_pos_left_down = any(['x', 'x', 'x', 'x'] == list(x) for x in zip(*[x[i:] for i in range(len(['x', 'x', 'x', 'x']))]))
         if player_pos_left_down == True:
             who_won = 'Player one'
             return True
         y = np.diagonal(np.fliplr(board), offset=count)
-        player_pos_left_down = any([1, 1, 1, 1] == list(y) for y in zip(*[y[i:] for i in range(len([1, 1, 1, 1]))]))
+        player_pos_left_down = any(['x', 'x', 'x', 'x'] == list(y) for y in zip(*[y[i:] for i in range(len(['x', 'x', 'x', 'x']))]))
         if player_pos_left_down == True:
             who_won = 'Player one'
             return True
         x = np.diagonal(board, offset=count)
-        player_neg_left_down = any([-1, -1, -1, -1] == list(x) for x in zip(*[x[i:] for i in range(len([-1, -1, -1, -1]))]))
+        player_neg_left_down = any(['b', 'b', 'b', 'b'] == list(x) for x in zip(*[x[i:] for i in range(len(['b', 'b', 'b', 'b']))]))
         if player_neg_left_down == True:
             who_won = 'Player two'
             return True
         y = np.diagonal(np.fliplr(board), offset=count)
-        player_neg_left_down = any([-1, -1, -1, -1] == list(y) for y in zip(*[y[i:] for i in range(len([-1, -1, -1, -1]))]))
+        player_neg_left_down = any(['b', 'b', 'b', 'b'] == list(y) for y in zip(*[y[i:] for i in range(len(['b', 'b', 'b', 'b']))]))
         if player_neg_left_down == True:
             who_won = 'Player two'
             return True
@@ -91,15 +95,19 @@ def win(board):
 def horizontal_vertical(board):
     global who_won
     for x in board:
-        player_pos = any([1, 1, 1, 1] == list(x) for x in zip(*[x[i:] for i in range(len([1, 1, 1, 1]))]))
+        player_pos = any(['x', 'x', 'x', 'x'] == list(x) for x in zip(*[x[i:] for i in range(len(['x', 'x', 'x', 'x']))]))
         if player_pos == True:
             who_won = 'Player one'
             return True
-        player_neg = any([-1, -1, -1, -1] == list(x) for x in zip(*[x[i:] for i in range(len([-1, -1, -1, -1]))]))
+        player_neg = any(['b', 'b', 'b', 'b'] == list(x) for x in zip(*[x[i:] for i in range(len(['b', 'b', 'b', 'b']))]))
         if player_neg == True:
             who_won = 'Player two'
             return True
     return False
+
+def convert_to_gamestate(board):
+    
+    pass
 
 
 connect_4()
