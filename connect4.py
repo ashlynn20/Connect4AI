@@ -109,10 +109,16 @@ def horizontal_vertical(board):
 
 def convert_to_gamestate(board):
     gamestate = []
-    for row in board:
-        for column in row:
-            gamestate.append(column)
-
+    columNum = 0
+    while columNum < 7:
+        arr = []
+        for row in board:
+            arr.append(row[columNum])
+        index = len(arr) - 1
+        while index > -1:
+            gamestate.append(arr[index])
+            index -= 1
+        columNum += 1
     return gamestate
 
 def file_reader(pattern):
