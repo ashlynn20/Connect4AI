@@ -4,19 +4,21 @@ who_won = 'no one'
 count = [0, 0, 0, 0, 0, 0, 0]
 
 def connect_4():
-    board = [['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o', 'o', 'o']]
+    board = [['b', 'b', 'b', 'b', 'b', 'b', 'b'], ['b', 'b', 'b', 'b', 'b', 'b', 'b'], ['b', 'b', 'b', 'b', 'b', 'b', 'b'], ['b', 'b', 'b', 'b', 'b', 'b', 'b'], ['b', 'b', 'b', 'b', 'b', 'b', 'b'], ['b', 'b', 'b', 'b', 'b', 'b', 'b']]
 
     for i in board:
         print(i)
-
+    moves = 0
     while(win(board) != True):
+        if moves == 8:
+            pattern = convert_to_gamestate(board)
+            file_reader(pattern)
         decision(board, 'x')
+        moves += 1
         if(win(board) == True):
             break
-        decision(board, 'b')
-    
-    #added to convert board to gamestate to test it works
-    convert_to_gamestate(board)
+        decision(board, 'o')
+        moves += 1
 
     print(who_won, 'won!')
 
@@ -46,7 +48,7 @@ def decision(board, num):
 def add_piece(position, board, num):
     count = len(board) - 1
     while count > -1:
-        if board[count][position] == 'o':
+        if board[count][position] == 'b':
             board[count][position] = num
             break
         count -= 1
@@ -79,12 +81,12 @@ def win(board):
             who_won = 'Player one'
             return True
         x = np.diagonal(board, offset=count)
-        player_neg_left_down = any(['b', 'b', 'b', 'b'] == list(x) for x in zip(*[x[i:] for i in range(len(['b', 'b', 'b', 'b']))]))
+        player_neg_left_down = any(['o', 'o', 'o', 'o'] == list(x) for x in zip(*[x[i:] for i in range(len(['o', 'o', 'o', 'o']))]))
         if player_neg_left_down == True:
             who_won = 'Player two'
             return True
         y = np.diagonal(np.fliplr(board), offset=count)
-        player_neg_left_down = any(['b', 'b', 'b', 'b'] == list(y) for y in zip(*[y[i:] for i in range(len(['b', 'b', 'b', 'b']))]))
+        player_neg_left_down = any(['o', 'o', 'o', 'o'] == list(y) for y in zip(*[y[i:] for i in range(len(['o', 'o', 'o', 'o']))]))
         if player_neg_left_down == True:
             who_won = 'Player two'
             return True
@@ -99,15 +101,28 @@ def horizontal_vertical(board):
         if player_pos == True:
             who_won = 'Player one'
             return True
-        player_neg = any(['b', 'b', 'b', 'b'] == list(x) for x in zip(*[x[i:] for i in range(len(['b', 'b', 'b', 'b']))]))
+        player_neg = any(['o', 'o', 'o', 'o'] == list(x) for x in zip(*[x[i:] for i in range(len(['o', 'o', 'o', 'o']))]))
         if player_neg == True:
             who_won = 'Player two'
             return True
     return False
 
 def convert_to_gamestate(board):
-    
-    pass
+    gamestate = []
+    for row in board:
+        for column in row:
+            gamestate.append(column)
 
+    return gamestate
+
+def file_reader(pattern):
+    data = np.loadtxt('connectData.data', delimiter=',', dtype=str)
+    features = data[:, :-1]  
+    labels = data[:, -1] 
+    
+    for i in range(len(features)):
+        if np.array_equal(features[i], pattern):
+            #could throw in condition here that determines f it's a win and rewards based on it
+            print("found")
 
 connect_4()
