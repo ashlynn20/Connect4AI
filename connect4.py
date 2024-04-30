@@ -1,4 +1,5 @@
 import numpy as np
+import ai
 
 who_won = 'no one'
 count = [0, 0, 0, 0, 0, 0, 0]
@@ -13,7 +14,7 @@ def connect_4():
         if moves == 8:
             pattern = convert_to_gamestate(board)
             file_reader(pattern)
-        decision(board, 'x')
+        ai_decision(board, 'x')
         moves += 1
         if(win(board) == True):
             break
@@ -38,10 +39,33 @@ def decision(board, num):
             position = int(input())
             if(position > 6 or position < 0):
                 print('Please enter a column from 0 - 6')
-                position = int(input())
+                position = int(input()) 
         count[temp] -= 1
         count[position] += 1
     board = add_piece(position, board, num)
+    for i in board:
+        print(i)
+
+def ai_decision(board, token):
+    global count
+    ai.current_board_state = board
+    print('Enter column to add piece')
+    position = ai.input()
+    if(position > 6 or position < 0):
+        print('Please enter a column from 0 - 6')
+        position = ai.input()
+    temp = position
+    count[temp] += 1
+    if(count[temp] > 6):
+        while(count[position] > 6):
+            print('Column full choose new column')
+            position = ai.input()
+            if(position > 6 or position < 0):
+                print('Please enter a column from 0 - 6')
+                position = ai.input()
+        count[temp] -= 1
+        count[position] += 1
+    board = add_piece(position, board, token)
     for i in board:
         print(i)
 
